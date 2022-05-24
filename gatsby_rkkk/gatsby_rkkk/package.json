@@ -1,0 +1,31 @@
+{
+  "name": "gatsby_rkkk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "some gatsby of rkkk",
+  "author": "justatext@163.com",
+  "keywords": [
+    "gatsby",
+    "TypeScript",
+    "React"
+  ],
+  "scripts": {
+    "develop": "gatsby develop",
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "gatsby": "^4.14.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.35",
+    "@types/react": "^17.0.45",
+    "@types/react-dom": "^17.0.17",
+    "typescript": "^4.6.4"
+  }
+}

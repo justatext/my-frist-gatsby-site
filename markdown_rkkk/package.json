@@ -1,0 +1,15 @@
+{
+  "name": "markdown_rkkk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "some markdown of rkkk",
+  "author": "rkkk",
+  "devDependencies": {
+    "vuepress": "^1.9.7"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  }
+}
