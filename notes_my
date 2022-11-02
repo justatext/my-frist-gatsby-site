@@ -1,0 +1,646 @@
+## Array
+
+
+## safari - bug
+
+Safari bug — border-radius + overflow: hidden
+Safari 上使用 border-radius 搭配 overflow: hidden 沒有圓角效果，這其實是 Safari 在呈現計算上的錯誤 [Bug]，可以藉由設定遮罩讓其重新計算。
+
+範例程式碼：
+element selector {
+  border-radius: 10px;
+  overflow: hidden;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+或是設定 z-index 讓他重新計算堆疊位置，程式碼如下：
+element selector {
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+} 
+
+## CSS 
+
+1.隱藏數字輸入框 (Input Number) 的上下箭頭 (Arrows) 控制項
+
+>> 撰寫網站時，難免都會替輸入框 (input) 設定自定義樣式，有時就會需要隱藏原先輸入框 (input) 的控制項。這邊紀錄網路上查找到，隱藏數字輸入框 (Input Number) 上下箭頭 (Arrows/Spinners) 控制項的方式。
+
+
+程式碼
+
+```
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+```
+SCSS 文件最好使用 @include themify ,以免篡改，或者优先级问题
+```
+@include themify {
+        color: themed("primary");
+    }
+```
+
+
+
+深拷贝&浅拷贝
+Json.prarse
+Json.stringfy
+
+
+
+## Swiper 插件
+
+/*注意*/
+1.同时展示多个swiper时候，swiper容器和翻页切换要加唯一id
+2.navigation 翻页按钮要和html 的class一致 
+3.如果要做先隐藏在显示的话，切换按钮会失效不能点，切换不了。尴尬，只能用style={{display:"none"}}来控制显隐
+4.realIndex 是实际索引，activeIndex是当前活跃的索引，包含前后复制的slide所以这个索引会不准确
+```
+pagination: {
+  el: `.swiper-pagination-${$postion}`,
+},
+navigation: {
+  nextEl: `.box_next-${$postion}`,
+  prevEl: `.box_prev-${$postion}`, 
+},
+
+<div className={`${cStyles.btn_area_box}`}>
+  <div className={`${cStyles.set_prev} s-button-prev`}>
+    <SvgIcons xlinkHref={`#iconangle_left`} />
+  </div>
+  <div className={`${cStyles.set_next} s-button-next`}>
+    <SvgIcons xlinkHref={`#iconarrgle_right`} />
+  </div>
+</div>
+
+```
+##  用两个问号做判断 ?? 
+判断如果前者无数据的时候给一个默认值，不需要三目运算了
+```
+let 321 ?? {}
+```
+
+
+
+## 单页面应用Redux 不共享
+缓存是共享的，redux不共享
+
+
+## Safari 静音播放Video机制
+这个场景是结合Swiper模拟抖音的视频播放，因为Safari默认静音，在视频加载的时候再延迟播放已经晚了，另辟蹊跷：视频参数配置  默认开声音不播放，在Swiper的onSlideChangeTransitionEnd渲染组件重新赋值， 以及 onTouchStart 事件中延时加载，从swiper返回切换后的视频索引，重新赋值，当索引值变化时候执行播放事件MyVideo.play(),有做延迟操作的话要把poster设置为图片，防止看到卡顿重播的现象。** 注意src才会实时更新视频资源，如果是source不会即使更新视频资源，会显示上一个。
+
+### React & TypeScript
+```
+const videoDom = createRef(); //react 的ref等于当前视频元素
+const MyVideo = videoDom.current;
+MyVideo.play()
+
+const playStyle = () => {
+  return {
+    muted: false,
+    controls: false,
+    autoPlay: false,
+    preload: "metadata",
+    loop: true,
+  };
+};
+const setStyle = () => {
+  return {
+    width: "100%",
+    height: "100%",
+  };
+};
+
+<video
+  id={`my-video-${aIndex}`}
+  className="video-js"
+  playsInline={true}
+  webkit-playsinline="true"
+  ref={ref}
+  {...setObj}
+  {...setCss}
+  poster={vPosterImg}
+  src={`${vVideoUrl}?v=1`}
+/>
+```
+
+## 文字单行超出隐藏
+```
+text-overflow: ellipsis;
+white-space: nowrap;
+word-break: keep-all;
+```
+## 文字多行超出隐藏
+```
+overflow : hidden;
+text-overflow: ellipsis;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical; 
+```
+
+## 节流  &&  防抖
+```
+export function throttle() {
+  let prev = Date.now();
+  return function (func, delay) {
+    const context = this;
+    const args = arguments;
+    const now = Date.now();
+    if (now - prev >= delay) {
+      func.apply(context, args);
+      prev = Date.now();
+    }
+  };
+}
+export function debounce() {
+  let handle;
+  return function (fn, time) {
+    clearTimeout(handle);
+    handle = setTimeout(() => {
+      fn.call(this);
+    }, time || 50);
+  };
+}
+```
+
+## 价格补零
+```
+export function addZero(num) {
+  num += "";
+  num = num.replace(/[^0-9|\.]/g, "");
+  if (/^0+/) num = num.replace(/^0+/, "");
+  if (!/\./.test(num)) num += ".00";
+  if (/^\./.test(num)) num = `0${num}`;
+  num += "00";
+  num = num.match(/\d+\.\d{2}/)[0];
+  return num;
+}
+```
+## 
+
+## 格式化区域内滚动条
+1.最外层固定宽、高
+2.滚动区域固定宽、高。在滚动区域上面加滚动条的样式
+3.overflow-y: overlay; 可以隐藏滚动条的占位，scroll 或 auto 会显示占位
+
+```
+    .right_cont{
+       &::-webkit-scrollbar {
+            width: 7px;
+            /*竖向滚动条的宽度*/
+            height: 1px;
+            /*横向滚动条的高度*/
+        }
+       &::-webkit-scrollbar-thumb {
+        /*滚动条里面的小方块*/
+        background: #222;
+      }
+
+      &::-webkit-scrollbar-track {
+          /*滚动条轨道的样式*/
+          background: #444;
+      }
+    }
+```
+## 判断是否滚动条到了底部
+Document.compatMode只读属性指示文档是以Quirks 模式还是标准模式 呈现 。
+
+```
+  function getScrollTop() {
+    var scrollTop = 0,
+      bodyScrollTop = 0,
+      documentScrollTop = 0;
+    if (document.body) {
+      bodyScrollTop = document.body.scrollTop;
+    }
+    if (document.documentElement) {
+      documentScrollTop = document.documentElement.scrollTop;
+    }
+    scrollTop =
+      bodyScrollTop - documentScrollTop > 0 ? bodyScrollTop : documentScrollTop;
+    return scrollTop;
+  }
+
+  function getScrollHeight() {
+    let bSH, dSH;
+    var scrollHeight = 0,
+      bodyScrollHeight = 0,
+      documentScrollHeight = 0;
+    if (document.body) {
+      bSH = document.body.scrollHeight;
+    }
+    if (document.documentElement) {
+      dSH = document.documentElement.scrollHeight;
+    }
+    scrollHeight = bSH - dSH > 0 ? bSH : dSH;
+    return scrollHeight;
+  }
+
+  function getWindowHeight() {
+    var windowHeight = 0;
+    if (document.compatMode == "CSS1Compat") {
+      windowHeight = document.documentElement.clientHeight;
+    } else {
+      windowHeight = document.body.clientHeight;
+    }
+    return windowHeight;
+  }
+
+  useEffect(() => {
+    window.onscroll = function () {
+      if (getScrollTop() + getWindowHeight() >= getScrollHeight() - 60) {
+        // console.log("已经到最底部了！!",getScrollTop(),getWindowHeight(),getScrollHeight());
+
+        pullingUpFN();
+      }
+    };
+  }, [process.browser, pageInfo]);
+
+```
+
+
+## 清除弹窗的虚边
+
+```
+.modal {
+    height: 600px;
+    background-color: #fff;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    z-index: 99;
+    border-radius: 16px;
+    max-height: 90vh;
+}
+.modal:focus {
+    outline: none;
+}
+
+.modal::-moz-focus-inner {
+    border: 0;
+}
+.insImg::selection {
+    background-color: transparent;
+}
+
+```
+
+## CSS 三角形
+通常是做气泡类的小三角，相对于父级定位
+
+```
+.filler_corner{
+      position: absolute;
+      bottom: -1em;
+      left: 1.2rem;
+      &::after {
+          content: "";
+          width: 0;
+          border-left: 12px solid transparent;
+          border-right: 12px solid transparent;
+          border-bottom: 12px solid #EBEBEB;
+      }
+  }
+```
+
+## 细边框变成粗边框的定位方法
+```
+
+  &:before {
+      border: 1.5px solid;
+      border-radius: 8px;
+      position: absolute;
+      top: -1px;
+      bottom: 0;
+      left: -1px;
+      right: 0;
+      content: "";
+      width: 100%;
+      height: 100%;
+      width: calc(100% - 1.5px);
+      height: calc(100% - 1.5px);
+      -webkit-box-sizing: content-box;
+      box-sizing: content-box;
+      @include themify {
+          border-color: themed("primary"); 
+      }
+  }
+
+```
+
+
+## 匹配url查询参数
+```
+const getParamValue = function(url,key){
+    let regex = new RegExp(key+"=([^&]*)","i");
+    return url.match(regex)[1];
+
+}
+getParamValue(window.location.href,"id")
+```
+
+
+## Swiper 组件封装
+```
+
+```
+
+# Using the React-Redux Bindings
+
+## Using Redux with React
+Redux can be used with any UI layer (such as Angular, Vue, or plain JS), but is most commonly used with React. The official React-Redux package provides bindings between React and Redux.
+
+The connect function generates wrapper "container" components that subscribe to the store, so you don't have to write store subscription code for every component that needs to talk to the store.
+
+Any component in your application can be wrapped with connect and "connected" to the store. Connecting more components is usually better for performance.
+
+Finally, putting a <Provider> component around your root component makes the store accessible to all connected components.
+
+## What Does connect Do?
+
+Automatically handles subscribing to the store, and helps dispatch actions
+Performance optimizations - automatically implements shouldComponentUpdate, and only re-renders your component when the data it needs changes.
+Separates "subscribing to the store" from "what store am I subscribing to, and where did it come from?"
+Helps keep your React components "unaware" of Redux.
+
+## Why Use React-Redux?
+There's no reason to write repetitive store subscription logic in every component. connect handles that for you automatically.
+connect does a lot of work to ensure your real component only re-renders when it actually needs to. If you hand-write subscription code, your component will probably re-render too often.
+Manually importing the store ties your components to that specific store instance, making it harder to test them. React-Redux's <Provider> acts as a lightweight dependency injection approach, which lets you reuse Redux-connected components and test them with a fake store if needed.
+Your components will receive data and callback functions as props, same as any other React component would. This makes the more reusable.
+Effectively all React+Redux apps use React-Redux, so that's what the documentation, articles, and community all refer to.
+
+## 评论数、点赞数 显示K+ w+ 999w+
+单位转化为k（千）或 w（万）,并保留一位小数
+1e3为10的三次幂=1000 1e4=10000
+```
+function formatNumber(num){
+    return num >= 1e3 && num < 1e4 ? (num / 1e3).toFixed(1) + 'k' : num >= 1e4 ? (num / 1e4).toFixed(1) + 'w' : num   
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# setTimeout && setInterval
+1.setInterval定时
+```
+if (goodsData?.length > 0 && clock_timer?.startTime) {
+    //起始时间
+    setTimeout(() => {
+      let iii = 0; //存一个和索引值一致的数字
+      if (goodsData?.length > 0 && clock_timer?.intervalTime > 0) {
+        //1.首次：（播放时间 - 起始时间 = 延迟时间）
+        //2.多次：（播放时间）
+        let tim =
+          iii == 0
+            ? (clock_timer?.intervalTime - clock_timer?.startTime) * 1000
+            : clock_timer?.intervalTime * 1000;
+
+        goodsChowTimer = window.setInterval(() => {
+          if (iii == goodsData.length) {
+            //先累加--再播放
+            iii = 0;
+            setCardindex(goodsData.length - 1);
+            setChecked(true);
+          } else {
+            //先播放---再置空
+            setCardindex(iii);
+            setChecked(true);
+            iii++;
+          }
+        }, tim);
+        return () => {
+          goodsChowTimer = 0;
+          window.clearInterval(goodsChowTimer);
+          clearInterval(goodsChowTimer);
+          setChecked(false);
+        };
+      }
+    }, clock_timer?.startTime * 1000);
+  }
+```
+
+1.setTimeout嵌套
+```
+     window.setTimeout(() => {
+​      //先播放---再置空
+​      setCardindex(iii);
+​      setChecked(true);
+​      iii++;
+​      goodsChowTimer = window.setTimeout(() => {
+​       if (iii == goodsData.length) {
+​        //先累加--再播放
+​        iii = 0;
+​        setCardindex(goodsData.length - 1);
+​        setChecked(true);
+​       } else {
+​        //先播放---再置空
+​        setCardindex(iii);
+​        setChecked(true);
+​        iii++;
+​       }
+​      }, tim);
+​     },0)  
+
+```
+3.setTimeout嵌套 只能执行固定的次数
+```
+  const addFuc = (iii)=>{
+    // debugger
+      if (iii == goodsData.length) {
+        //先累加--再播放
+        iii = 0;
+        setCardindex(goodsData.length - 1);
+        setChecked(true);
+      } else {
+        //先播放---再置空
+        setCardindex(iii);
+        setChecked(true);
+        iii++;
+      }
+  }
+
+  const asyncTimer = (iii,tim,callback) =>{
+    console.log("goodsData?.length",goodsData?.length) 
+      addFuc(iii)
+      goodsChowTimer = setTimeout(() => {     
+        addFuc(iii)
+        callback(tim)
+      },tim)
+      
+      return ()=>{                  
+        clearTimeout(); 
+        window.clearTimeout(); 
+        setChecked(false);
+      } 
+  }
+ switch (goodsData?.length) {
+            case 1:
+ asyncTimer(iii,tim,()=>{ 
+    asyncTimer(iii,tim,()=>{ 
+      asyncTimer(iii,tim,()=>{ 
+        console.log("timer",clock_timer)
+      })
+    })
+  })
+  break;
+  }
+
+```
+
+```
+  // const compareFuc = (nextProps, prevState) => {
+  //   return (
+  //     prevState !== nextProps ||
+  //     JSON.stringify(prevState) !== JSON.stringify(nextProps)
+  //   );
+  // };
+```
+
+
+
+## 有效的清除，选择定时器的方式useRef
+```
+
+  let interval: any = useRef(0);
+  var iii = 0; //存一个和索引值一致的数字
+
+  //清除上一次倒计时开启新的倒计时
+  const startCountdown = (tim) => {
+    window.clearInterval(interval.current);
+    interval.current = 0;
+    
+    //先播放---再置空
+    setCardindex(iii);
+    setChecked(true);
+    iii++;
+    setFirst(true)
+    interval.current = window.setInterval(() => {
+      if (iii == goodsData.length) {
+        //先累加--再播放
+        iii = 0;
+        setCardindex(goodsData.length - 1);
+        setChecked(true);
+      } else {
+        //先播放---再置空
+        setCardindex(iii);
+        setChecked(true);
+        iii++;
+      }
+    }, tim);
+    return () => {
+      clearInterval(interval.current);
+      interval.current = null;
+    };
+  };
+  
+  useEffect(() => { 
+    window.clearInterval(interval.current);
+    interval.current = 0; 
+      if (goodsData?.length > 0 && clock_timer?.startTime && aIndex == sIndex) {        
+        //起始延迟时间
+        setTimeout(() => {
+          if (goodsData?.length > 0 && clock_timer?.intervalTime > 0) {
+            //1.首次：（播放时间 - 起始时间 = 延迟时间）
+            //2.多次：（播放时间）
+            let tim = (iii == 0) ? (clock_timer?.intervalTime - clock_timer?.startTime) * 1000 : clock_timer?.intervalTime * 1000;
+            //调用定时时间
+            startCountdown(tim)
+          }
+        }, clock_timer?.startTime * 1000);  
+      } 
+  }, [goodsData, clock_timer,sIndex]);
+ 
+```
+
+## 主题色
+```
+  data.editableEl.properties.$anyStyle = {
+    title: "不区分站点的主题模式",
+    type: "string",
+    enum: ["primary","dark_black","light_pink"],
+    enumNames: ["基本色系", "深黑色系", "浅粉色系"],
+    default: "primary",
+  };
+```
+
+## 用两行命令删除分支
+```
+// 删除本地分支
+git branch -d localBranchName
+
+// 删除远程分支
+git push origin --delete remoteBranchName
+
+```
+
+## 原生select 
+```
+select {
+    // -webkit-appearance: none;
+    // appearance: none;
+      width: 22rem;
+      height: 4.8rem;
+      background: #ffffff;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      line-height: 4.8rem;
+      padding-left: 1.6rem;
+      &>option,&>*{ 
+          font-size: 1.8rem;
+          color: #333;
+      } 
+}
+```
+
+## 字符串String
+```
+// 查找字符串包含.includes("xxx")
+//将一个String对象分割成子字符串数组.split("xxx") 括号什么都没有，即可转换为数组
+//从指定位置开始截取字符串 .slice(2)
+//将数组遍历一下且以某种格式连接起来.join("&")
+
+```
+
+### gatsby
+```
+1.全局安装
+npm install -g gatsby-cli
+
+2.本地安装
+npm install gatsby-cli
+
+3.初始化Gatsby
+npm init gatsby
+
+4.运行项目
+npm run develop
+```
+
